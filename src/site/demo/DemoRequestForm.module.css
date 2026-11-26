@@ -1,0 +1,363 @@
+/*
+ * The "Book a demo" form (src/site/demo/DemoRequestForm.tsx): since F-192c a
+ * white dialog on the violet close, in the app's style: floating labels, a
+ * field that shakes once when the server names it, and a send button that
+ * turns into a ring and then a tick, keeping its width. Brand tokens and the
+ * app's glass and motion tokens only; src/admin/admin-styles.test.ts keeps it
+ * that way.
+ *
+ * ★ Only pairings `src/brand/contrast-pairs.ts` measures, or the dialog's
+ * white (`--site-dialog`, site-glass.test.ts): control borders are `ink-muted`
+ * (a `line` border fails as a control edge), and errors are an `on-status`
+ * word on a `status-danger` fill, never danger-coloured text, which fails on
+ * `surface-raised` in the dark theme. The focus ring is the global one in
+ * `site.scss`, in violet again inside the dialog.
+ */
+
+/*
+ * The dialog: the site's dialog white with the sheen, the shine and the
+ * floating shadow, on the opaque violet band, so no frost (it would only blur
+ * violet into violet). Solid with reduced transparency.
+ */
+.dialog {
+  padding: var(--evemos-space-4);
+  border-radius: var(--ex-r-xl);
+  background: var(--ex-sheen), var(--site-dialog);
+  box-shadow: var(--ex-shine), var(--ex-shadow-float);
+  color: var(--evemos-ink);
+}
+
+@media (min-width: 768px) {
+  .dialog {
+    padding: calc(var(--evemos-space-4) + var(--evemos-space-2));
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .dialog {
+    background: var(--ex-solid);
+  }
+}
+
+/* The violet band's light ring would vanish on the white: inside the dialog the ring is violet again. */
+.dialog :is(a, button, input, select, textarea):focus-visible {
+  outline-color: var(--evemos-hall-violet);
+}
+
+.form {
+  display: grid;
+  gap: var(--evemos-space-4);
+}
+
+.row {
+  display: grid;
+  gap: var(--evemos-space-1);
+  min-width: 0;
+}
+
+/*
+ * A floating label: inside its field while the field is empty, moved up and
+ * made smaller once it has focus or a value, so the label never leaves. The
+ * label follows its control in the markup, so CSS alone sees both; a select,
+ * and a field with an example in it (`data-float`), keep theirs up. Raised,
+ * it is drawn at .76 on one line, so it may take the width that leaves it;
+ * at rest, the message's long label wraps inside its tall field instead of
+ * losing "(optional)".
+ */
+.field {
+  position: relative;
+  min-width: 0;
+}
+
+.label {
+  position: absolute;
+  top: var(--evemos-space-4);
+  left: calc(var(--evemos-space-2) + var(--evemos-space-1) + 1px);
+  max-width: calc(100% - var(--evemos-space-8));
+  overflow: hidden;
+  color: var(--evemos-ink-muted);
+  line-height: var(--evemos-type-body-line);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+  transform-origin: left top;
+  transition:
+    transform var(--ex-t-fast) var(--ex-out),
+    color var(--ex-t-fast) var(--ex-out);
+}
+
+.field[data-float] .label,
+.field:focus-within .label,
+.input:not(:placeholder-shown) + .label {
+  max-width: calc((100% - var(--evemos-space-8)) / 0.76);
+  white-space: nowrap;
+  transform: translateY(-10px) scale(0.76);
+}
+
+.multiline .label {
+  white-space: normal;
+}
+
+/*
+ * A long message scrolls under a band of the field's own white across its
+ * top, where the raised label sits, so no line runs under the label. The band
+ * stops short of the right edge, clear of the scroll bar.
+ */
+.multiline::before {
+  content: '';
+  position: absolute;
+  top: 1px;
+  right: var(--evemos-space-4);
+  left: 1px;
+  height: calc(var(--evemos-space-4) + var(--evemos-space-2) - 1px);
+  border-start-start-radius: var(--ex-r-md);
+  background: var(--evemos-surface-raised);
+  pointer-events: none;
+}
+
+.field:focus-within .label {
+  color: var(--evemos-hall-violet);
+}
+
+.optional {
+  font-weight: var(--evemos-type-body-weight);
+}
+
+.hint {
+  color: var(--evemos-ink-muted);
+}
+
+/* 56px tall, room for the label over the value; 16px text, so a phone does not zoom in. */
+.input {
+  width: 100%;
+  min-width: 0;
+  min-height: 56px;
+  padding: calc(var(--evemos-space-4) + var(--evemos-space-2)) var(--evemos-space-2) var(--evemos-space-2)
+    calc(var(--evemos-space-2) + var(--evemos-space-1));
+  border: 1px solid var(--evemos-ink-muted);
+  border-radius: var(--ex-r-md);
+  background: var(--evemos-surface-raised);
+  color: var(--evemos-ink);
+  font: inherit;
+  font-size: var(--evemos-type-body-size);
+  transition: border-color var(--ex-t-fast) var(--ex-out);
+}
+
+.input:focus {
+  border-color: var(--evemos-hall-violet);
+}
+
+/* The select draws no arrow of its own; `.chevron` sits in the room the right padding leaves. */
+.field select {
+  appearance: none;
+  padding-right: calc(var(--evemos-space-8) + var(--evemos-space-2));
+}
+
+.chevron {
+  position: absolute;
+  top: 50%;
+  right: var(--evemos-space-2);
+  display: flex;
+  color: var(--evemos-ink-muted);
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+textarea.input {
+  resize: vertical;
+}
+
+.input::placeholder {
+  color: var(--evemos-ink-muted);
+}
+
+.checkboxRow {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: var(--evemos-space-2);
+  row-gap: var(--evemos-space-1);
+  /* 44px tall at least: the box and its label are one touch target. */
+  min-height: 44px;
+}
+
+.checkbox {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: var(--evemos-hall-violet);
+}
+
+.checkboxRow .fieldError {
+  grid-column: 1 / -1;
+}
+
+.fieldError,
+.alert {
+  padding: var(--evemos-space-1) var(--evemos-space-2);
+  border-radius: var(--evemos-radius-sm);
+  background: var(--evemos-status-danger);
+  color: var(--evemos-on-status);
+}
+
+/* A link inside an error takes the error's own colour: violet on the danger fill is a pair nobody measured. */
+.alert a {
+  color: inherit;
+}
+
+.notice,
+.email {
+  color: var(--evemos-ink-muted);
+  overflow-wrap: anywhere;
+}
+
+/*
+ * A field the server names (`aria-invalid`) shakes once, side to side, as the
+ * app's fields do, as its error appears under it. Sent again and named again,
+ * it shakes again: the error is cleared while the form sends.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .shake {
+    animation: field-shake 360ms var(--ex-out);
+  }
+}
+
+@keyframes field-shake {
+  20% {
+    transform: translateX(-7px);
+  }
+
+  40% {
+    transform: translateX(6px);
+  }
+
+  60% {
+    transform: translateX(-4px);
+  }
+
+  80% {
+    transform: translateX(3px);
+  }
+}
+
+/*
+ * The send button as the app's button doing work (ui.module.css "button doing
+ * work"): sending, its label goes clear and a ring spins over it; sent, a tick
+ * stands there until the "Request sent" panel takes the form's place. The
+ * label keeps its place, so the button keeps its width. Ring and tick are
+ * `currentColor`; the ring's faint track is the same colour see-through.
+ */
+.submit {
+  position: relative;
+  justify-self: start;
+}
+
+.submit:disabled {
+  cursor: progress;
+}
+
+.submitLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: inherit;
+}
+
+.submit[data-work] > .submitLabel {
+  opacity: 0;
+}
+
+.spinner,
+.tick {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.spinner::before,
+.spinner::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+}
+
+.spinner::before {
+  opacity: 0.3;
+}
+
+.spinner::after {
+  border-color: currentColor transparent transparent;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .submitLabel {
+    transition: opacity var(--ex-t-fast) var(--ex-out);
+  }
+
+  .spinner::after {
+    animation: send-spin 700ms linear infinite;
+  }
+
+  .spinner,
+  .tick {
+    animation: send-mark var(--ex-t-base) var(--ex-out) backwards;
+  }
+}
+
+/* No movement: the ring stands whole, as the app's does, since an arc that never turns reads as a stray mark. */
+@media (prefers-reduced-motion: reduce) {
+  .spinner::after {
+    border-color: currentColor;
+  }
+}
+
+@keyframes send-spin {
+  to {
+    rotate: 1turn;
+  }
+}
+
+@keyframes send-mark {
+  from {
+    opacity: 0;
+    scale: 0.6;
+  }
+}
+
+/* Off screen, not `display: none`: see the comment on the honeypot in the component. */
+.honeypot {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.done,
+.unavailable {
+  display: grid;
+  gap: var(--evemos-space-2);
+}
+
+.done p {
+  color: var(--evemos-ink-muted);
+}
+
+/* "Request sent" grows in where the form was, as the app's dialogs open. */
+@media (prefers-reduced-motion: no-preference) {
+  .done {
+    animation: done-in var(--ex-t-base) var(--ex-out) backwards;
+  }
+}
+
+@keyframes done-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}

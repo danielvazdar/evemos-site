@@ -1,0 +1,18 @@
+/* A hall animation (SiteVideo.tsx): `radius-lg`, no outline, 16:9; `wide` crops it to a 21:9 band. */
+.figure {
+  margin: 0;
+}
+
+.video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--evemos-radius-lg);
+  background: var(--evemos-surface-raised);
+  object-fit: cover;
+}
+
+.wide {
+  aspect-ratio: 21 / 9;
+}

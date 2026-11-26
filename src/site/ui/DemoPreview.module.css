@@ -1,0 +1,84 @@
+/*
+ * Small drawn pictures of product screens with demo data (the product pages
+ * without a screenshot, ProductPreviews.tsx, and the accreditation page): the
+ * window with its "Demo data" head, and its rows. Brand tokens and the app's
+ * glass and motion tokens only; src/admin/admin-styles.test.ts keeps it that
+ * way.
+ */
+
+/*
+ * The screen's window: glass on the washes (F-192d). The element carries the
+ * site's glass too (home.module.css `.glass`, which draws the strong glass on
+ * a layer behind it, so it has no fill of its own here); the strong glass
+ * carries every text colour on it (site-glass.test.ts).
+ */
+.preview {
+  display: grid;
+  gap: var(--evemos-space-2);
+  padding: var(--evemos-space-4);
+  border-radius: var(--ex-r-xl);
+}
+
+.previewHead {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--evemos-space-2);
+  padding-bottom: var(--evemos-space-2);
+  color: var(--evemos-ink-muted);
+  font-size: var(--evemos-type-body-size);
+  line-height: var(--evemos-type-body-line);
+  font-weight: var(--evemos-type-body-strong-weight);
+}
+
+.previewAside {
+  color: var(--evemos-ink);
+}
+
+.pointLine {
+  color: var(--evemos-ink-muted);
+}
+
+.rows {
+  display: grid;
+  gap: var(--evemos-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* A row is a white card in the window, as the app's board draws its deals. */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--evemos-space-2);
+  padding: var(--evemos-space-2) var(--evemos-space-4);
+  border-radius: var(--evemos-radius-sm);
+  background: var(--evemos-surface-raised);
+  font-weight: var(--evemos-type-body-strong-weight);
+}
+
+/* Rows of a product screen arrive once as the picture scrolls in (reduced motion: no movement). */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .row {
+      animation: row-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+  }
+}
+
+@keyframes row-in {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

@@ -1,0 +1,95 @@
+/*
+ * The floorplan pattern (brand book §05). Tiles are 40px (the source tile) or
+ * 48px from tablets up, `space-2` between booths in a row and a wider aisle
+ * (`space-8` minus `space-2`) after every second row. Brand tokens only.
+ */
+
+.pattern {
+  --tile: 40px;
+  display: grid;
+  gap: var(--evemos-space-2);
+  overflow: hidden;
+  padding-block: var(--evemos-space-8);
+  background: var(--evemos-hall-violet);
+}
+
+@media (min-width: 768px) {
+  .pattern {
+    --tile: 48px;
+  }
+}
+
+.row {
+  display: flex;
+  gap: var(--evemos-space-2);
+  /* Starts left of the screen so the pattern bleeds off both edges. */
+  margin-left: calc(-1 * var(--tile) / 2);
+  width: max-content;
+}
+
+.aisleAfter {
+  margin-bottom: calc(var(--evemos-space-8) - var(--evemos-space-2) - var(--evemos-space-2));
+}
+
+.booth {
+  flex-shrink: 0;
+  height: var(--tile);
+  border-radius: var(--evemos-radius-sm);
+}
+
+.single {
+  width: var(--tile);
+}
+
+/* Two tiles and the gap between them, so a double booth lines up with the singles above it. */
+.double {
+  width: calc(2 * var(--tile) + var(--evemos-space-2));
+}
+
+.free {
+  background: var(--evemos-paper);
+}
+
+.yellow {
+  background: var(--evemos-badge-yellow);
+}
+
+.coral {
+  background: var(--evemos-lanyard-coral);
+}
+
+/*
+ * The signature move: booths fill in as the band scrolls into view, like a
+ * hall selling out. Scroll-driven, pure CSS, no script; three waves by
+ * position. Off for anyone who asks for reduced motion, and on browsers
+ * without scroll timelines the tiles simply sit there.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .booth {
+      animation: booth-fill linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 30%;
+    }
+
+    .booth:nth-child(3n + 1) {
+      animation-range: entry 0% cover 22%;
+    }
+
+    .booth:nth-child(3n + 2) {
+      animation-range: entry 20% cover 38%;
+    }
+  }
+}
+
+@keyframes booth-fill {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

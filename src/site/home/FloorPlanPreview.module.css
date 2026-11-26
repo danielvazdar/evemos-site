@@ -1,0 +1,173 @@
+/*
+ * The homepage's hall (FloorPlanPreview.tsx): the app's own floor plan in a
+ * glass window, with the site's switch (src/site/ui/PillSwitch.module.css)
+ * and booth card around it. The hall is the app's (HallCanvas, ui.module.css
+ * and hall-3d.module.css draw it); this file lays out the window and draws
+ * only what the site owns. Brand tokens and
+ * the app's glass and motion tokens only; src/admin/admin-styles.test.ts keeps
+ * it that way.
+ *
+ * The window is the strong glass (home.module.css `.glass`), which carries
+ * every text colour (site-glass.test.ts). The booth card inside it is a pane:
+ * the booth card's white with the sheen and the edge, and no second frost.
+ */
+
+.window {
+  margin: 0;
+  padding: var(--evemos-space-4);
+  border-radius: var(--ex-r-xl);
+  text-align: left;
+}
+
+@media (min-width: 768px) {
+  .window {
+    padding: calc(var(--evemos-space-4) + var(--evemos-space-2));
+  }
+}
+
+/* ── Over the hall: the show, how it sells, and the switch ─────────────── */
+
+.top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--evemos-space-2) var(--evemos-space-4);
+}
+
+.showName {
+  font-family: var(--evemos-font-display);
+  font-size: var(--evemos-type-title-size);
+  line-height: var(--evemos-type-title-line);
+  font-weight: var(--evemos-type-title-weight);
+}
+
+.soldCount {
+  color: var(--evemos-ink-muted);
+}
+
+/* ── The hall and its card ─────────────────────────────────────────────── */
+
+/* The hall over its legend, then the card under it; from 1024px the card stands beside the hall, as in the demo. */
+.body {
+  display: grid;
+  gap: var(--evemos-space-4);
+}
+
+@media (min-width: 1024px) {
+  .body {
+    grid-template-columns: minmax(0, 1fr) 290px;
+    align-items: center;
+  }
+}
+
+.hall {
+  min-width: 0;
+}
+
+/*
+ * Out of sight until a quarter of it is on screen (FloorPlanPreview.tsx
+ * `useSeenOnce`), then drawn afresh, so its entrance plays in view. Only with
+ * script (`reveal-ready`, which RevealOnScroll sets only with motion welcome):
+ * without it the hall stands built. A pointer can't press a booth it can't
+ * see; a keyboard reaching one builds the hall at once.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  :global(.reveal-ready) .hall[data-held] [data-view] {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* The picked booth's floor takes the pointer back in the app (hall-3d.module.css, D-pop); not while out of sight. */
+  :global(.reveal-ready) .hall[data-held] [data-view] [data-raised]::before {
+    pointer-events: none;
+  }
+}
+
+/* The stage is a plot nobody books: the app's dimmed look for a stand that can't be picked would hide it. */
+.hall [data-state='blocked']:disabled {
+  opacity: 1;
+  cursor: default;
+}
+
+.card {
+  padding: var(--evemos-space-4);
+  border: 1px solid var(--ex-rim);
+  border-radius: var(--ex-r-lg);
+  background: var(--ex-sheen), var(--site-booth-card);
+  box-shadow: var(--ex-shine), var(--ex-shadow-float);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .card {
+    background: var(--ex-solid);
+  }
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--evemos-space-2);
+  margin-bottom: var(--evemos-space-2);
+  font-family: var(--evemos-font-display);
+  font-size: var(--evemos-type-title-size);
+  line-height: var(--evemos-type-title-line);
+  font-weight: var(--evemos-type-title-weight);
+}
+
+/* The booth states in the brand's booth colours, each with the text colour contrast-pairs.ts measures on it. */
+.cardState {
+  padding: var(--evemos-space-1) var(--evemos-space-2);
+  border-radius: var(--evemos-radius-sm);
+  font-family: var(--font-body);
+  font-size: var(--evemos-type-body-size);
+  line-height: var(--evemos-type-body-line);
+  font-weight: var(--evemos-type-body-strong-weight);
+}
+
+.sold {
+  background: var(--evemos-booth-sold);
+  color: var(--evemos-on-hall-violet);
+}
+
+.reserved {
+  background: var(--evemos-booth-reserved);
+  color: var(--evemos-on-accent);
+}
+
+/* 1.5px drawn inside the chip, as the plan draws a free booth. */
+.free {
+  background: var(--evemos-booth-free);
+  color: var(--evemos-ink);
+  outline: 1.5px solid var(--evemos-ink-muted);
+  outline-offset: -1.5px;
+}
+
+.cardRows {
+  display: grid;
+  gap: var(--evemos-space-1) var(--evemos-space-8);
+  margin: 0;
+}
+
+/* Beside or under the hall, a row each: what on the left, the value on the right. */
+.cardRow {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--evemos-space-4);
+}
+
+.cardRow dt {
+  color: var(--evemos-ink-muted);
+}
+
+.cardRow dd {
+  margin: 0;
+  font-weight: var(--evemos-type-body-strong-weight);
+  text-align: right;
+}
+
+.caption {
+  margin-top: var(--evemos-space-4);
+  color: var(--evemos-ink-muted);
+}

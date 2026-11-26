@@ -1,0 +1,39 @@
+/* PlainList.tsx: items without boxes. Brand tokens only (src/admin/admin-styles.test.ts). */
+
+.list {
+  display: grid;
+  gap: var(--evemos-space-8);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 640px) {
+  .list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .cols3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .cols4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.title {
+  margin-bottom: var(--evemos-space-2);
+  color: var(--evemos-hall-violet);
+}
+
+.note {
+  margin-bottom: var(--evemos-space-2);
+  font-weight: var(--evemos-type-body-strong-weight);
+}
+
+.line {
+  color: var(--evemos-ink-muted);
+}

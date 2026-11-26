@@ -1,0 +1,527 @@
+/**
+ * Global styles for Evemos's own pages (F-021), and ONLY those: imported by
+ * `src/app/(site)/layout.tsx`, a root layout of its own, so nothing here ever
+ * reaches an organiser's event page.
+ *
+ * ★ THE TOKENS ARE THE ADMIN'S AND THE APP'S, not copies: the partial below is
+ * generated from the brand book's `src/brand/tokens.json`
+ * (`scripts/build-brand-tokens.ts`), the same file `custom.scss` loads, and the
+ * glass and motion tokens are the app's own file (E-119). Every colour here is a
+ * `var(--evemos-*)` or a mix of them; `src/admin/admin-styles.test.ts` fails on a
+ * colour literal anywhere on the site, and on glass, a shadow or a gradient in
+ * a component's stylesheet that is not a token.
+ *
+ * Components style themselves in CSS Modules (`src/site/**`). What lives here is
+ * what has to be global: the document, the headings, the focus ring, the class
+ * names `Mark.tsx` colours itself through, and the one place the site writes
+ * glass itself: its whites below, the backdrop and the entrance motion.
+ */
+@use '../../app/(payload)/brand-tokens.generated';
+@use '../../app/(app)/_components/glass-motion';
+
+/**
+ * The next/font faces in front of the brand's fallback stacks, as in
+ * `custom.scss`. The fallback goes INSIDE `var()`: outside it, an undefined
+ * `--font-*` makes the whole declaration invalid and the page falls back to
+ * Times. The layout puts the next/font classes on `<html>`, which is `:root`,
+ * so the variables resolve here directly.
+ */
+:root {
+  --font-body: var(--font-instrument-sans, 'Instrument Sans'), var(--evemos-family-sans);
+  --font-mono: var(--font-jetbrains-mono, 'JetBrains Mono'), var(--evemos-family-mono);
+  --evemos-font-display: var(--font-archivo, 'Archivo'), var(--evemos-family-display);
+
+  // Light only: tells the browser to draw its own controls and scrollbars light too.
+  color-scheme: light;
+
+  // The menu bar (`chrome.module.css`) floats this far from the window's top, this tall (E-119).
+  --site-bar-top: 12px;
+  --site-bar-height: 64px;
+  --site-header-height: calc(var(--site-bar-top) + var(--site-bar-height));
+}
+
+// On a phone the bar sits closer to the top and is a little lower, as in the demo.
+@media (max-width: 767px) {
+  :root {
+    --site-bar-top: 8px;
+    --site-bar-height: 58px;
+  }
+}
+
+/*
+ * ★ THE SITE'S GLASS (E-119; Daniel, Q5 = A): the approved demo's thin whites
+ * and strong frost, over its four soft washes rather than the app's ribbons,
+ * set here over the app's values. Every white is `surface-raised` at an
+ * opacity, and each holds 4.5:1 for the text on it at the washes' darkest spot
+ * (`site-glass.test.ts`). The app's three are what the app components the site
+ * draws read; the site's own are the menu bar's hover pill, its dropdowns, the
+ * small cards on photos, the hall's booth card, the booking form's dialog and
+ * the app's panes inside a site window.
+ *
+ * The strong glass is the menu bar's too, which floats over whatever the page
+ * scrolls under it: at the demo's 48 % its ink fell to 4.3:1 over pure black,
+ * so it is 50 %, where ink holds 4.6:1 over anything (F-192a review).
+ */
+:root {
+  --ex-glass: color-mix(in srgb, var(--evemos-surface-raised) 34%, transparent);
+  --ex-glass-strong: color-mix(in srgb, var(--evemos-surface-raised) 50%, transparent);
+  --ex-chip: color-mix(in srgb, var(--evemos-surface-raised) 42%, transparent);
+  --ex-blur: blur(22px) saturate(200%) brightness(1.04);
+
+  --site-pill: color-mix(in srgb, var(--evemos-surface-raised) 70%, transparent);
+  // The dropdowns keep the demo's 82 % glass where the frost draws (Chrome, Safari). Firefox draws no frost for them
+  // (F-192c review): a page's headline under them read through sharp at 82 % and still showed at 94 %, so Firefox
+  // alone gets the near-opaque white below (Daniel, 2026-11-17).
+  --site-dropdown: color-mix(in srgb, var(--evemos-surface-raised) 82%, transparent);
+  --site-dropdown-unfrosted: color-mix(in srgb, var(--evemos-surface-raised) 96%, transparent);
+  --site-photo-card: color-mix(in srgb, var(--evemos-surface-raised) 66%, transparent);
+  --site-booth-card: color-mix(in srgb, var(--evemos-surface-raised) 84%, transparent);
+  --site-dialog: color-mix(in srgb, var(--evemos-surface-raised) 94%, transparent);
+  // The app's panes inside a site window (the dashboard's tiles and panels, the sales board's columns): at the
+  // strong glass's 50 % a tile's success green fell to 4.4:1 over the violet wash (F-192c).
+  --site-pane: color-mix(in srgb, var(--evemos-surface-raised) 60%, transparent);
+
+  // Not whites: the dim under the phone's menu sheet, and the violet glow under a hovered primary button.
+  --site-dim: color-mix(in srgb, var(--evemos-ink) 30%, transparent);
+  --site-glow: 0 10px 26px color-mix(in srgb, var(--evemos-hall-violet) 30%, transparent);
+}
+
+// Firefox only (it alone answers `-moz-appearance`): its dropdowns draw no frost, so they take the near-opaque white.
+@supports (-moz-appearance: none) {
+  :root {
+    --site-dropdown: var(--site-dropdown-unfrosted);
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--evemos-paper);
+  color: var(--evemos-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-size-adjust: 100%;
+  // A jump to `/#product` lands the heading below the floating bar, with the bar's own gap under it.
+  scroll-padding-top: calc(var(--site-header-height) + var(--site-bar-top));
+}
+
+// The footer sits at the bottom of a short page (the error page, the placeholder).
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--evemos-type-body-size);
+  line-height: var(--evemos-type-body-line);
+  font-weight: var(--evemos-type-body-weight);
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-family: var(--evemos-font-display);
+  text-wrap: balance;
+}
+
+/**
+ * One `display` per page (the brand book), so it is the `h1`. On phones it
+ * steps down to `headline`, at normal width: 64px Archivo at width 125 fits
+ * about eight characters across a 360px screen, and the brand keeps the wide
+ * 125% for `display` only.
+ */
+h1 {
+  font-size: var(--evemos-type-headline-size);
+  line-height: var(--evemos-type-headline-line);
+  font-weight: var(--evemos-type-headline-weight);
+  letter-spacing: var(--evemos-type-headline-tracking);
+}
+
+@media (min-width: 768px) {
+  h1 {
+    font-size: var(--evemos-type-display-size);
+    line-height: var(--evemos-type-display-line);
+    font-weight: var(--evemos-type-display-weight);
+    letter-spacing: var(--evemos-type-display-tracking);
+    font-stretch: 125%;
+  }
+}
+
+h2 {
+  font-size: var(--evemos-type-headline-size);
+  line-height: var(--evemos-type-headline-line);
+  font-weight: var(--evemos-type-headline-weight);
+  letter-spacing: var(--evemos-type-headline-tracking);
+}
+
+/* On a phone a 36px section heading wraps to three lines; a fifth smaller keeps most to two. */
+@media (max-width: 479px) {
+  h2 {
+    font-size: calc(var(--evemos-type-headline-size) * 0.8);
+  }
+}
+
+h3 {
+  font-size: var(--evemos-type-title-size);
+  line-height: var(--evemos-type-title-line);
+  font-weight: var(--evemos-type-title-weight);
+  letter-spacing: var(--evemos-type-title-tracking);
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: var(--evemos-hall-violet);
+}
+
+/**
+ * The brand's focus ring on every interactive element: a solid 2px
+ * `hall-violet` outline, 2px off the element. Nothing on the site sets
+ * `outline: none`; a component that needs a different ring changes its colour
+ * or offset, never removes it.
+ */
+:focus-visible {
+  outline: 2px solid var(--evemos-hall-violet);
+  outline-offset: 2px;
+}
+
+/* Nothing widens a page sideways: the homepage's app window runs to the right edge by 100vw, which counts a scrollbar (home.module.css `.journeyBleed`). */
+main {
+  flex: 1;
+  overflow-x: clip;
+}
+
+/**
+ * Off screen until a keyboard reaches it; then it sits over the header's
+ * corner, above the sticky bar.
+ */
+.skip-link {
+  position: absolute;
+  top: var(--evemos-space-2);
+  left: var(--evemos-space-2);
+  z-index: 20;
+  padding: var(--evemos-space-2) var(--evemos-space-4);
+  border-radius: var(--evemos-radius-md);
+  background: var(--evemos-hall-violet);
+  color: var(--evemos-on-hall-violet);
+  font-weight: var(--evemos-type-body-strong-weight);
+  transform: translateY(calc(-100% - var(--evemos-space-4)));
+}
+
+.skip-link:focus-visible {
+  transform: none;
+}
+
+/** The Aisle E (`src/admin/Mark.tsx`) fills its rects through these class names. */
+.evemos-mark {
+  display: block;
+  flex: none;
+}
+
+.evemos-mark__bar {
+  fill: var(--evemos-hall-violet);
+}
+
+.evemos-mark__aisle {
+  fill: var(--evemos-badge-yellow);
+}
+
+/** Read by screen readers, not drawn. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/** Counters and figures that sit in columns: every digit the same width. */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/*
+ * Smooth only once the visitor has clicked into the page. On a bare `html` it
+ * also ran on load and on Back: the page reloads (nonce CSP, no back/forward
+ * cache) and animated the jump to `#demo` over a half-drawn page (#222). Load
+ * and Back are now instant everywhere, by design. Safari (macOS and iOS) does
+ * not focus a link on click, so its in-page jumps are instant too.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  html:focus-within {
+    scroll-behavior: smooth;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/*
+ * Entrance motion (src/site/ui/RevealOnScroll.tsx), in the app's timing
+ * (E-109): each block rises 20px, fades in and un-blurs 6px over
+ * `--ex-t-enter`, and `data-reveal="n"` holds it n steps of `--ex-stagger`.
+ * Only under `html.reveal-ready`, so without script nothing is hidden.
+ * Transform, opacity and filter only.
+ *
+ * A block that is glass or holds glass (`data-glass`) does not blur: a filter
+ * cuts a frost off from what lies behind it until the block lands.
+ */
+.reveal-ready [data-reveal]:not([data-revealed]) {
+  opacity: 0;
+  transform: translateY(20px);
+  filter: blur(6px);
+}
+
+.reveal-ready [data-reveal]:is([data-glass], :has([data-glass])):not([data-revealed]) {
+  filter: none;
+}
+
+.reveal-ready [data-reveal] {
+  transition:
+    opacity var(--ex-t-enter) var(--ex-out),
+    transform var(--ex-t-enter) var(--ex-out),
+    filter var(--ex-t-enter) var(--ex-out);
+  transition-delay: calc(var(--reveal-step, 0) * var(--ex-stagger));
+}
+
+.reveal-ready [data-reveal='1'] {
+  --reveal-step: 1;
+}
+
+.reveal-ready [data-reveal='2'] {
+  --reveal-step: 2;
+}
+
+.reveal-ready [data-reveal='3'] {
+  --reveal-step: 3;
+}
+
+.reveal-ready [data-reveal='4'] {
+  --reveal-step: 4;
+}
+
+/*
+ * A view a window switches to (the homepage's app window, AppWindow.tsx,
+ * `data-view-enter`) rises 12px, fades in and un-blurs over `--ex-t-enter`,
+ * as the app's new page does. Here because this is the one sheet that writes
+ * a blur. With reduced motion the view just shows.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  [data-view-enter] {
+    animation: site-view-enter var(--ex-t-enter) var(--ex-out) backwards;
+  }
+}
+
+@keyframes site-view-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+    filter: blur(6px);
+  }
+}
+
+/*
+ * ★ THE BACKDROP (src/site/ui/SiteBackdrop.tsx; E-119, Q5 = A): the approved
+ * demo's four soft washes, fixed behind every page at full strength, in the
+ * app's wash colours (glass-motion.css): violet top right, soft violet left,
+ * coral at the bottom, yellow bottom right. A phone draws them larger, so its
+ * narrow window still holds them.
+ *
+ * Each drifts out and back on its own loop, by transform only, stepped to 8 a
+ * second (E-110): each step re-frosts every glass surface over it. The server's
+ * clock (`--wash-clock`) starts every page's washes where the last page left
+ * them. They stop where they are while anything scrolls and in a hidden tab
+ * (`data-paused`), and once the device check or Save-Data says still; with
+ * reduced motion they never move.
+ */
+.site-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.site-backdrop i {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--wash) 0%, var(--wash) 30%, transparent 100%);
+  animation: var(--wash-drift) var(--wash-loop) steps(var(--wash-steps)) var(--wash-clock, 0s) infinite alternate;
+}
+
+.site-backdrop i:nth-child(1) {
+  --wash: var(--ex-wash-violet);
+  --wash-drift: site-wash-1;
+  --wash-loop: 30s;
+  --wash-steps: 240;
+
+  top: -22vw;
+  right: -14vw;
+  width: 64vw;
+  height: 64vw;
+}
+
+.site-backdrop i:nth-child(2) {
+  --wash: var(--ex-wash-violet-soft);
+  --wash-drift: site-wash-2;
+  --wash-loop: 34s;
+  --wash-steps: 272;
+
+  top: 22vh;
+  left: -22vw;
+  width: 56vw;
+  height: 56vw;
+}
+
+.site-backdrop i:nth-child(3) {
+  --wash: var(--ex-wash-coral);
+  --wash-drift: site-wash-3;
+  --wash-loop: 38s;
+  --wash-steps: 304;
+
+  bottom: -30vw;
+  left: 30vw;
+  width: 52vw;
+  height: 52vw;
+}
+
+.site-backdrop i:nth-child(4) {
+  --wash: var(--ex-wash-yellow);
+  --wash-drift: site-wash-4;
+  --wash-loop: 26s;
+  --wash-steps: 208;
+
+  right: 2vw;
+  bottom: -6vw;
+  width: 34vw;
+  height: 34vw;
+}
+
+@keyframes site-wash-1 {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+
+  to {
+    transform: translate(-13vw, 6vh) scale(1.2);
+  }
+}
+
+@keyframes site-wash-2 {
+  from {
+    transform: translate(0, 0) scale(0.92);
+  }
+
+  to {
+    transform: translate(12vw, -4vh) scale(1.12);
+  }
+}
+
+@keyframes site-wash-3 {
+  from {
+    transform: translate(0, 0) scale(1.1);
+  }
+
+  to {
+    transform: translate(-14vw, -5vh) scale(0.92);
+  }
+}
+
+@keyframes site-wash-4 {
+  from {
+    transform: translate(0, 0) scale(0.95);
+  }
+
+  to {
+    transform: translate(-12vw, -8vh) scale(1.18);
+  }
+}
+
+.site-backdrop[data-paused] i,
+html[data-wash='still'] .site-backdrop i {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-backdrop i {
+    animation: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .site-backdrop i:nth-child(1) {
+    top: -30vw;
+    right: -50vw;
+    width: 110vw;
+    height: 110vw;
+  }
+
+  .site-backdrop i:nth-child(2) {
+    left: -60vw;
+    width: 100vw;
+    height: 100vw;
+  }
+
+  .site-backdrop i:nth-child(3) {
+    left: 10vw;
+    width: 100vw;
+    height: 100vw;
+  }
+
+  .site-backdrop i:nth-child(4) {
+    width: 70vw;
+    height: 70vw;
+  }
+}
+
+@media print {
+  .site-backdrop {
+    display: none;
+  }
+}
+
+/*
+ * ★ PAGE CHANGES (E-119): the browser's own cross-document view transition,
+ * CSS only (Chrome and Edge 126+, Safari 18.2+; Firefox changes pages as
+ * before). Links stay plain links, so every page still loads whole. The old
+ * page fades out as the new one fades in, both over `--ex-t-fast` on
+ * `--ex-out`, so whatever is the same on both pages (the menu bar, the
+ * washes, held in step by their clock) stays as it is, and only what changes
+ * crossfades. Never with reduced motion.
+ *
+ * Nothing is named for it, on purpose (F-192a, checked in Chrome 157): a named
+ * element is pictured on its own, without the frost behind it, and stays a
+ * backdrop root the whole time, so the menu bar's glass and its dropdowns'
+ * would stop frosting; a named backdrop disappears under the page's picture,
+ * which carries the page's paper. Whole, the page's picture is the page as
+ * drawn, glass and all.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+
+  ::view-transition-group(root),
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: var(--ex-t-fast);
+    animation-timing-function: var(--ex-out);
+  }
+}

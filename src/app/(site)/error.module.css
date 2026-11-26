@@ -1,0 +1,23 @@
+/*
+ * The site's error page (error.tsx): its message centred on the washes, with
+ * the header and footer round it. Brand tokens only (src/admin/admin-styles.test.ts).
+ */
+
+.message {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: var(--evemos-space-8);
+  min-height: 40vh;
+  text-align: center;
+}
+
+/* The heading brings its own bottom margin; the gap does the spacing here. */
+.message > :first-child {
+  margin-bottom: 0;
+}
+
+/* The buttons, centred too when a phone wraps them onto two lines. */
+.message > :last-child {
+  justify-content: center;
+}

@@ -1,0 +1,147 @@
+/*
+ * The dashboard on the site (OverviewPreview.tsx): the app's own Overview
+ * pieces in a glass window. The pieces are the app's (overview.module.css and
+ * charts.module.css draw them); this file lays out the window, draws the event
+ * chip over it, and says when the pieces may move. Brand tokens and the app's
+ * glass and motion tokens only; src/admin/admin-styles.test.ts keeps it that way.
+ *
+ * The window is the strong glass (home.module.css `.glass`). The app's tiles
+ * and panels are glass of their own; inside the window they keep their sheen
+ * and edge but frost no second time (DESIGN.md "Website": never more than two
+ * layers, and a pane inside a window never frosts again), and their white is
+ * the site's pane white, which holds a tile's success green at 4.5:1 over the
+ * violet wash (site-glass.test.ts).
+ */
+
+.window {
+  padding: var(--evemos-space-4);
+  border-radius: var(--ex-r-xl);
+  text-align: left;
+}
+
+/* Over the dashboard: the event chip, and "Demo data" at the far end when the row has room. */
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--evemos-space-2) var(--evemos-space-4);
+  padding: var(--evemos-space-1) var(--evemos-space-1) var(--evemos-space-4);
+}
+
+.tag {
+  margin-left: auto;
+  color: var(--evemos-ink-muted);
+  font-size: var(--evemos-type-code-size);
+  line-height: var(--evemos-type-code-line);
+}
+
+/*
+ * The event, as the app's event switcher shows it: the show's initials and
+ * year on an ink tile, its name and dates beside them, on the chip glass,
+ * which carries ink and muted ink (site-glass.test.ts).
+ */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--evemos-space-2);
+  min-height: 48px;
+  padding: var(--evemos-space-1) var(--evemos-space-4) var(--evemos-space-1) var(--evemos-space-1);
+  border-radius: var(--ex-r-md);
+  background: var(--ex-sheen), var(--ex-chip);
+  box-shadow: var(--ex-chip-edge);
+}
+
+.chipTile {
+  display: grid;
+  place-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--ex-r-sm);
+  background: var(--evemos-ink);
+  color: var(--evemos-surface-raised);
+  font-family: var(--evemos-font-display);
+  font-size: var(--evemos-type-label-size);
+  line-height: 1.1;
+  font-weight: var(--evemos-type-label-weight);
+  text-align: center;
+}
+
+.chipText {
+  display: grid;
+  font-size: var(--evemos-type-code-size);
+  line-height: var(--evemos-type-code-line);
+  font-weight: var(--evemos-type-body-strong-weight);
+}
+
+.chipText small {
+  color: var(--evemos-ink-muted);
+  font-size: var(--evemos-type-label-size);
+  line-height: var(--evemos-type-label-line);
+  font-weight: var(--evemos-type-body-weight);
+}
+
+/* ── The dashboard: the four numbers, the chart beside the ring, Needs you ── */
+
+.dashboard {
+  display: grid;
+  gap: var(--evemos-space-4);
+}
+
+/* The tiles (a div each) and the panels (a section each) draw their glass on `::before`: here a pane, without its frost. */
+.dashboard div::before,
+.dashboard section::before {
+  background: var(--ex-sheen), var(--site-pane);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .dashboard div::before,
+  .dashboard section::before {
+    background: var(--ex-solid);
+  }
+}
+
+/* The chart and the ring, two thirds and one, as the app's Overview sets them; one under the other on a phone. */
+.middle {
+  display: grid;
+  gap: var(--evemos-space-4);
+}
+
+@media (min-width: 640px) {
+  .middle {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  }
+}
+
+/*
+ * On a phone the picture keeps the four figures, the chart and the ring, as
+ * the approved demo does: the tiles drop their trend lines (each tile's one
+ * block under its figures, Tiles.tsx) and Needs you is left out.
+ */
+@media (max-width: 639px) {
+  .tiles > section > div > div,
+  .needs {
+    display: none;
+  }
+}
+
+/*
+ * The pieces count up, draw their lines and fill the ring once, by CSS, as in
+ * the app, where they play as the page is drawn. On the site the dashboard is
+ * drawn long before a visitor scrolls to it, so with motion welcome they wait
+ * for the site's reveal (`reveal-ready`, which RevealOnScroll sets once script
+ * runs): until then every piece shows final, as it does without script. From
+ * then on each starts afresh, held while the block around the window is still
+ * to be revealed, so it plays where it is seen. With reduced motion nothing
+ * moves and every figure is final (site.scss).
+ */
+@media (prefers-reduced-motion: no-preference) {
+  html:not(:global(.reveal-ready)) .dashboard * {
+    animation: none;
+  }
+
+  :global(.reveal-ready) [data-reveal]:not([data-revealed]) .dashboard * {
+    animation-play-state: paused;
+  }
+}

@@ -1,0 +1,120 @@
+/*
+ * The sales board (Previews.tsx `PipelinePreview`) in the app board's look
+ * (F-192c): one glass column per stage, each exhibitor a white card, the won
+ * ones in the sold booth's violet, as on the hall plan. It lies in the
+ * homepage's app window, on the window's glass, so each column is a pane: the
+ * site's pane white with the sheen and the edge, and no frost of its own, as
+ * the dashboard's tiles (DESIGN.md "Website"). Brand tokens and the app's
+ * glass and motion tokens only;
+ * src/admin/admin-styles.test.ts keeps it that way.
+ */
+
+/* Two columns on a phone, the four stages side by side from 640px, as the approved demo. */
+.columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--evemos-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 640px) {
+  .columns {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--evemos-space-4);
+  }
+}
+
+.column {
+  display: grid;
+  align-content: start;
+  gap: var(--evemos-space-2);
+  padding: var(--evemos-space-2);
+  border: 1px solid var(--ex-rim);
+  border-radius: var(--ex-r-lg);
+  background: var(--ex-sheen), var(--site-pane);
+  box-shadow: var(--ex-shine);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .column {
+    background: var(--ex-solid);
+  }
+}
+
+/* The stage and its count, as the app's board heads its columns. */
+.stage {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--evemos-space-2);
+  padding: var(--evemos-space-1) var(--evemos-space-1) 0;
+  font-weight: var(--evemos-type-body-strong-weight);
+}
+
+/* `ink-muted` on `paper`, a pair the brand measures, as the app's counts. */
+.count {
+  padding: 0 var(--evemos-space-2);
+  border-radius: var(--app-pill);
+  background: var(--evemos-paper);
+  color: var(--evemos-ink-muted);
+  font-size: var(--evemos-type-code-size);
+  line-height: var(--evemos-type-code-line);
+}
+
+.deals {
+  display: grid;
+  gap: var(--evemos-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.deal {
+  display: grid;
+  gap: var(--evemos-space-1);
+  padding: var(--evemos-space-2);
+  border-radius: var(--ex-r-md);
+  background: var(--evemos-surface-raised);
+  box-shadow: var(--ex-shadow);
+}
+
+.dealName {
+  font-weight: var(--evemos-type-body-strong-weight);
+}
+
+.dealDetail {
+  color: var(--evemos-ink-muted);
+  font-size: var(--evemos-type-code-size);
+  line-height: var(--evemos-type-code-line);
+}
+
+/* Won: the sold booth's violet with its own text colour (contrast-pairs.ts), the detail too. */
+.column[data-won] .deal {
+  background: var(--evemos-booth-sold);
+  color: var(--evemos-on-hall-violet);
+}
+
+.column[data-won] .dealDetail {
+  color: inherit;
+}
+
+/*
+ * Each time the board is shown, its cards rise one after another, half a
+ * stagger (45 ms) apart, as the app's rows enter (DESIGN.md "Rows"), after the
+ * window's own change of view has begun.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .deal {
+    animation: deal-in var(--ex-t-enter) var(--ex-out) backwards;
+    animation-delay: calc(var(--ex-stagger) + var(--card) * var(--ex-stagger) / 2);
+  }
+}
+
+@keyframes deal-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}

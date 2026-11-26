@@ -1,0 +1,22 @@
+/*
+ * The About page's own pieces (src/site/about). Layout and photos reuse the
+ * homepage's journey styles. Brand tokens only (src/admin/admin-styles.test.ts).
+ */
+
+.paragraph {
+  color: var(--evemos-ink-muted);
+}
+
+.cardTitle {
+  margin-top: var(--evemos-space-4);
+  margin-bottom: var(--evemos-space-2);
+}
+
+.muted {
+  color: var(--evemos-ink-muted);
+}
+
+.founderMore {
+  margin-top: var(--evemos-space-4);
+  font-weight: var(--evemos-type-body-strong-weight);
+}

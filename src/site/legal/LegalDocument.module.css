@@ -1,0 +1,223 @@
+/*
+ * Evemos's legal documents (src/site/legal/LegalDocument.tsx): plain prose at
+ * a reading measure, hairline tables. Brand tokens only; no shadows, gradients
+ * or colour literals (src/admin/admin-styles.test.ts).
+ */
+
+/*
+ * A reading page's title on the washes (`ReadingPage`): the heading, its
+ * intro and the date line, in the full ink, since muted text falls under
+ * 4.5:1 over the violet wash. The heading brings its own bottom margin; the
+ * gap does the spacing here.
+ */
+.head {
+  display: grid;
+  gap: var(--evemos-space-4);
+}
+
+.head > :first-child {
+  margin-bottom: 0;
+}
+
+.head p {
+  color: var(--evemos-ink);
+}
+
+/* The document on its paper band, which brings the padding. */
+.document {
+  display: grid;
+  gap: var(--evemos-space-8);
+}
+
+/*
+ * Prose keeps a reading measure of about 72 characters. Tables take the full
+ * column instead, so a five-column table is not squeezed into it.
+ */
+.contents,
+.section > p,
+.list,
+.details,
+.authority {
+  max-width: 72ch;
+}
+
+/* Every grid child may shrink below its content, so a wide table scrolls in its box instead of widening the page. */
+.document > *,
+.section > * {
+  min-width: 0;
+}
+
+/* The contents and the tables lie white on the paper. */
+.contents {
+  padding: var(--evemos-space-4);
+  background: var(--evemos-surface-raised);
+  border: 1px solid var(--evemos-line);
+  border-radius: var(--evemos-radius-sm);
+}
+
+/* An h2 for the outline, in the `label` style so it does not compete with the sections. */
+.contentsTitle {
+  margin-bottom: var(--evemos-space-2);
+  font-family: var(--font-body);
+  font-size: var(--evemos-type-label-size);
+  line-height: var(--evemos-type-label-line);
+  font-weight: var(--evemos-type-label-weight);
+  letter-spacing: var(--evemos-type-label-tracking);
+  text-transform: uppercase;
+}
+
+.contentsList {
+  display: grid;
+  gap: var(--evemos-space-1);
+  margin: 0;
+  padding-left: var(--evemos-space-8);
+}
+
+/* Section links land below the sticky header (`scroll-padding-top` in site.scss). */
+.section {
+  display: grid;
+  gap: var(--evemos-space-4);
+}
+
+.sectionTitle {
+  font-size: var(--evemos-type-title-size);
+  line-height: var(--evemos-type-title-line);
+  font-weight: var(--evemos-type-title-weight);
+  letter-spacing: var(--evemos-type-title-tracking);
+}
+
+.list {
+  display: grid;
+  gap: var(--evemos-space-2);
+  margin: 0;
+  padding-left: var(--evemos-space-8);
+}
+
+.line {
+  display: block;
+}
+
+.details {
+  display: grid;
+  gap: var(--evemos-space-2);
+  margin: 0;
+}
+
+.detailRow {
+  display: grid;
+  gap: var(--evemos-space-1);
+}
+
+@media (min-width: 768px) {
+  .detailRow {
+    grid-template-columns: 12rem 1fr;
+    gap: var(--evemos-space-4);
+  }
+}
+
+.details dt {
+  font-weight: var(--evemos-type-body-strong-weight);
+}
+
+.details dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.authority {
+  font-style: normal;
+}
+
+/* The box scrolls, the page does not: on a 360px phone a five-column table is wider than the screen. */
+.tableWrap {
+  overflow-x: auto;
+  border: 1px solid var(--evemos-line);
+  border-radius: var(--evemos-radius-sm);
+  background: var(--evemos-surface-raised);
+}
+
+.table {
+  width: 100%;
+  min-width: 40rem;
+  border-collapse: collapse;
+}
+
+.caption {
+  padding: var(--evemos-space-2) var(--evemos-space-4);
+  text-align: left;
+  font-weight: var(--evemos-type-body-strong-weight);
+}
+
+.table th,
+.table td {
+  padding: var(--evemos-space-2) var(--evemos-space-4);
+  border-top: 1px solid var(--evemos-line);
+  text-align: left;
+  vertical-align: top;
+}
+
+/* The header row in the paper, so it stands apart from the white rows. */
+.table thead th {
+  background: var(--evemos-paper);
+  font-size: var(--evemos-type-label-size);
+  line-height: var(--evemos-type-label-line);
+  font-weight: var(--evemos-type-label-weight);
+  letter-spacing: var(--evemos-type-label-tracking);
+  text-transform: uppercase;
+}
+
+.table tbody th {
+  font-weight: var(--evemos-type-body-strong-weight);
+}
+
+/*
+ * On a phone (600px) each row becomes a card: the first cell as its title,
+ * every other cell under the column header it carries in `data-label`. The
+ * header row is visually hidden, not `display: none`, so screen readers keep
+ * the column names.
+ */
+@media (max-width: 37.5rem) {
+  .table {
+    min-width: 0;
+  }
+
+  .table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .table tr,
+  .table th,
+  .table td {
+    display: block;
+  }
+
+  .table tbody tr {
+    padding-block: var(--evemos-space-2);
+    border-top: 1px solid var(--evemos-line);
+  }
+
+  .table tbody th,
+  .table tbody td {
+    padding-block: var(--evemos-space-1);
+    border-top: 0;
+  }
+
+  .table td::before {
+    content: attr(data-label);
+    display: block;
+    color: var(--evemos-ink-muted);
+    font-size: var(--evemos-type-label-size);
+    line-height: var(--evemos-type-label-line);
+    font-weight: var(--evemos-type-label-weight);
+    letter-spacing: var(--evemos-type-label-tracking);
+    text-transform: uppercase;
+  }
+}

@@ -1,0 +1,75 @@
+/*
+ * The site's two-way switch, the approved demo's: the hall's 2D / 3D
+ * (FloorPlanPreview.tsx, two buttons) and the app window's Overview / Sales
+ * (AppWindow.tsx, two pills a pointer presses in a picture, not buttons). Two
+ * equal halves (every child but the sliding pill) on the chip glass, each 44
+ * px tall (the site's touch target), and a white pill under the one picked
+ * (`aria-pressed` on a button, `data-picked` on a pill), which slides to the
+ * second half with the app's spring when the switch carries `data-second`. The words are muted until pressed (ink and muted ink are what
+ * the chip glass carries, site-glass.test.ts). Brand tokens and the app's
+ * glass and motion tokens only; src/admin/admin-styles.test.ts keeps it that way.
+ */
+.switch {
+  position: relative;
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  padding: var(--evemos-space-1);
+  border-radius: var(--app-pill);
+  background: var(--ex-sheen), var(--ex-chip);
+  box-shadow: var(--ex-chip-edge);
+}
+
+.switch > :not(.pill) {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 52px;
+  min-height: 44px;
+  padding: 0 var(--evemos-space-4);
+  border: 0;
+  border-radius: var(--app-pill);
+  background: none;
+  color: var(--evemos-ink-muted);
+  font: inherit;
+  font-weight: var(--evemos-type-body-strong-weight);
+  cursor: pointer;
+  transition:
+    color var(--ex-t-fast) var(--ex-out),
+    transform var(--ex-t-base) var(--ex-spring);
+}
+
+.switch > [aria-pressed='true'],
+.switch > [data-picked] {
+  color: var(--evemos-ink);
+}
+
+/* A press answers at once, as the site's buttons do. */
+.switch > :not(.pill):active {
+  transform: scale(0.96);
+  transition-duration: var(--ex-t-press);
+  transition-timing-function: ease-out;
+}
+
+.pill {
+  position: absolute;
+  top: var(--evemos-space-1);
+  bottom: var(--evemos-space-1);
+  left: var(--evemos-space-1);
+  width: calc(50% - var(--evemos-space-1));
+  border-radius: var(--app-pill);
+  background: var(--evemos-surface-raised);
+  box-shadow: var(--ex-shadow);
+  transition: transform var(--ex-t-enter) var(--ex-spring);
+}
+
+.switch[data-second] .pill {
+  transform: translateX(100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .switch > :not(.pill):active {
+    transform: none;
+  }
+}

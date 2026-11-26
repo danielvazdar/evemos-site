@@ -1,0 +1,210 @@
+/*
+ * Evemos's site building blocks (src/site/ui/primitives.tsx). Brand tokens and
+ * the app's glass and motion tokens only; src/admin/admin-styles.test.ts keeps
+ * it that way.
+ */
+
+/* The demo's column (E-119): 1280px at most, its gutter growing with the window from 16 to 48px. */
+.container {
+  --gutter: clamp(16px, 3.4vw, 48px);
+
+  width: min(1280px, 100% - 2 * var(--gutter));
+  margin-inline: auto;
+}
+
+/* Sections are two section gaps apart on phones, three on wider screens. */
+.section {
+  padding-block: calc(var(--evemos-space-8) * 2);
+}
+
+@media (min-width: 1024px) {
+  .section {
+    padding-block: calc(var(--evemos-space-8) * 3);
+  }
+}
+
+.paper {
+  --card-fill: var(--evemos-surface-raised);
+
+  background: var(--evemos-paper);
+}
+
+.raised {
+  --card-fill: var(--evemos-paper);
+
+  background: var(--evemos-surface-raised);
+}
+
+/* No band: the backdrop's washes show through (E-119). A card on it stays white until its page makes it glass. */
+.open {
+  --card-fill: var(--evemos-surface-raised);
+
+  background: transparent;
+}
+
+/*
+ * The close (E-119): one field of hall violet in its own text colour, the pair
+ * the brand measures. Links take the text colour and the focus ring turns white.
+ */
+.violet {
+  --card-fill: var(--evemos-surface-raised);
+
+  background: var(--evemos-hall-violet);
+  color: var(--evemos-on-hall-violet);
+}
+
+.violet a:not(.button),
+.violet .lead {
+  color: inherit;
+}
+
+.violet :focus-visible {
+  outline-color: var(--evemos-on-hall-violet);
+}
+
+.heading {
+  display: grid;
+  gap: var(--evemos-space-4);
+  max-width: 48rem;
+  margin-bottom: var(--evemos-space-8);
+}
+
+.lead {
+  max-width: 40rem;
+  color: var(--evemos-ink-muted);
+}
+
+.icon {
+  flex: none;
+}
+
+/*
+ * A pill 44px tall at least, the touch target the WCAG guidance asks for (E-131).
+ * It springs back from a press over `--ex-t-base`; colour and glow ease.
+ */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--evemos-space-2);
+  min-height: 44px;
+  padding: var(--evemos-space-2) calc(var(--evemos-space-4) + var(--evemos-space-2));
+  border: 1px solid transparent;
+  border-radius: var(--app-pill);
+  font-size: var(--evemos-type-body-strong-size);
+  line-height: var(--evemos-type-body-strong-line);
+  font-weight: var(--evemos-type-body-strong-weight);
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    transform var(--ex-t-base) var(--ex-spring),
+    background-color var(--ex-t-fast) var(--ex-out),
+    box-shadow var(--ex-t-fast) var(--ex-out);
+}
+
+/* A narrow phone fits the lockup, "Book a demo" and the menu button on one line. */
+@media (max-width: 479px) {
+  .button {
+    padding-inline: var(--evemos-space-4);
+  }
+}
+
+/*
+ * On a pointer that hovers, a button lifts a pixel, and the primary darkens to
+ * the app's hover violet (measured with its text in contrast-pairs.ts) with a
+ * violet glow. A finger gets none of it.
+ */
+@media (hover: hover) {
+  .button:hover {
+    transform: translateY(-1px);
+  }
+
+  .primary:hover {
+    background: var(--app-primary-hover);
+    box-shadow: var(--site-glow);
+  }
+}
+
+/* A press answers at once: down to .96 in `--ex-t-press`, back with the spring on release. */
+.button:active {
+  transform: scale(0.96);
+  transition-duration: var(--ex-t-press);
+  transition-timing-function: ease-out;
+}
+
+/* With reduced motion a button neither lifts nor shrinks; its colour still answers. */
+@media (prefers-reduced-motion: reduce) {
+  .button:hover,
+  .button:active {
+    transform: none;
+  }
+}
+
+/* Only the <button> variant needs these; an <a> has no default font or cursor to undo. */
+button.button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.buttonRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--evemos-space-4);
+}
+
+.primary {
+  background: var(--evemos-hall-violet);
+  color: var(--evemos-on-hall-violet);
+}
+
+.secondary {
+  background: var(--evemos-surface-raised);
+  color: var(--evemos-ink);
+  border-color: var(--evemos-ink-muted);
+}
+
+.onBrand {
+  background: var(--evemos-paper);
+  color: var(--evemos-ink);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--evemos-space-1) var(--evemos-space-2);
+  border-radius: var(--evemos-radius-sm);
+  font-size: var(--evemos-type-body-size);
+  line-height: var(--evemos-type-body-line);
+  font-weight: var(--evemos-type-body-strong-weight);
+  white-space: nowrap;
+}
+
+.chip-success {
+  background: var(--evemos-status-success);
+  color: var(--evemos-on-status);
+}
+
+.chip-warning {
+  background: var(--evemos-status-warning);
+  color: var(--evemos-on-accent);
+}
+
+.chip-danger {
+  background: var(--evemos-status-danger);
+  color: var(--evemos-on-status);
+}
+
+.chip-info {
+  background: var(--evemos-status-info);
+  color: var(--evemos-on-hall-violet);
+}
+
+.chip-neutral {
+  background: var(--evemos-status-neutral);
+  color: var(--evemos-on-status);
+}
+
+.chip-muted {
+  background: var(--evemos-paper);
+  color: var(--evemos-ink);
+}

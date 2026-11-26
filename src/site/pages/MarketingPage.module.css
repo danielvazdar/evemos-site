@@ -1,0 +1,243 @@
+/*
+ * The templated marketing pages (src/site/pages/MarketingPage.tsx). Cards and
+ * bands come from the shared primitives, the glass from the homepage's
+ * (home.module.css `.glass`). Brand tokens and the app's glass and motion
+ * tokens only (src/admin/admin-styles.test.ts).
+ */
+
+.hero {
+  display: grid;
+  justify-items: start;
+  gap: var(--evemos-space-4);
+  max-width: 52rem;
+}
+
+/*
+ * Page titles here are short sentences beside a picture, not poster words: the
+ * display size without the 125% width, so they hold two lines beside the picture.
+ */
+.hero h1 {
+  font-stretch: 100%;
+}
+
+/* The lead in the full ink at title size: the second thing read on the page. */
+.hero p {
+  color: var(--evemos-ink);
+  font-size: var(--evemos-type-title-size);
+  line-height: var(--evemos-type-title-line);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--evemos-space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.itemTitle {
+  margin-bottom: var(--evemos-space-2);
+}
+
+.itemLine {
+  color: var(--evemos-ink);
+}
+
+.connects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--evemos-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/*
+ * A filled tag with an arrow, plain on its calm band: a link to a page this one
+ * works with. On a pointer that hovers it lifts 2 px, as the site's cards do,
+ * in the app's timing.
+ */
+.connect {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--evemos-space-2);
+  padding: var(--evemos-space-2) var(--evemos-space-4);
+  border-radius: var(--evemos-radius-md);
+  background: var(--card-fill, var(--evemos-surface-raised));
+  color: var(--evemos-ink);
+  font-weight: var(--evemos-type-body-strong-weight);
+  text-decoration: none;
+  transition:
+    transform var(--ex-t-base) var(--ex-spring),
+    color var(--ex-t-fast) var(--ex-out);
+}
+
+.connect:hover {
+  color: var(--evemos-hall-violet);
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .connect:hover {
+    transform: translateY(-2px);
+  }
+}
+
+/*
+ * The two-photo strip after the sections: wide then narrow, cropped to one
+ * height, so the pair reads as one picture of the page's world. In the page
+ * container; stacked on a phone.
+ */
+.gallery {
+  padding-block: var(--evemos-space-8);
+}
+
+.galleryRow {
+  display: grid;
+  gap: var(--evemos-space-4);
+}
+
+@media (min-width: 768px) {
+  .galleryRow {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  }
+
+  /* The flipped strip, after the first section: narrow then wide. */
+  .galleryRowFlip {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  }
+
+  .galleryItem img,
+  .galleryItem video {
+    height: 100%;
+    aspect-ratio: auto;
+    object-fit: cover;
+  }
+}
+
+/* One gallery photo edge to edge between two sections: a wide letterbox on screens, 3:2 on a phone. */
+.banner img {
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border-radius: 0;
+}
+
+@media (min-width: 768px) {
+  .banner img {
+    aspect-ratio: 21 / 9;
+  }
+}
+
+/* "How it connects" with a photo of the page's world beside the links. */
+.connectsSplit {
+  display: grid;
+  gap: var(--evemos-space-8);
+  align-items: center;
+}
+
+@media (min-width: 1024px) {
+  .connectsSplit {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+
+/* A card's title as its link (the product overview): the whole title is the target. */
+.cardLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--evemos-space-2);
+  color: var(--evemos-ink);
+  text-decoration: none;
+}
+
+.cardLink:hover {
+  color: var(--evemos-hall-violet);
+}
+
+/*
+ * Hero with a picture: the title, lead and button across the top, the picture
+ * under them at the full width of the page (the homepage's pattern), so the
+ * first screen has one dominant thing and a five-to-seven-word title holds
+ * two lines.
+ */
+.heroSplit {
+  display: grid;
+  gap: var(--evemos-space-8);
+}
+
+.heroVisual {
+  min-width: 0;
+}
+
+/*
+ * A picture on the washes (`GlassFrame`): a thin ring of glass round it, the
+ * homepage film's frame, with the picture's corners inside the frame's.
+ */
+.glassFrame {
+  padding: var(--evemos-space-2);
+  border-radius: var(--ex-r-xl);
+}
+
+.glassFrame img,
+.glassFrame video {
+  border-radius: var(--ex-r-lg);
+}
+
+/* The /product hall film: under the hero's text and photo, inside the hero band, so it needs no band padding of its own. */
+.heroFilm {
+  margin-top: var(--evemos-space-8);
+}
+
+.splitCopy {
+  display: grid;
+  gap: var(--evemos-space-4);
+}
+
+/* Items without boxes: space does the separating. */
+.list {
+  display: grid;
+  gap: var(--evemos-space-8) var(--evemos-space-8);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 640px) {
+  .listWide {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .listWide {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.listTitle {
+  margin-bottom: var(--evemos-space-2);
+  color: var(--evemos-hall-violet);
+}
+
+/* The first section's items, larger: the title in the display face at title size, in the ink. */
+.listLead .listTitle {
+  color: var(--evemos-ink);
+  font-family: var(--evemos-font-display);
+  font-size: var(--evemos-type-title-size);
+  line-height: var(--evemos-type-title-line);
+  font-weight: var(--evemos-type-title-weight);
+  letter-spacing: var(--evemos-type-title-tracking);
+}

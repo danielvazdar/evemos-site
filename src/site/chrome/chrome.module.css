@@ -1,0 +1,647 @@
+/*
+ * The site header, footer and lockup (src/site/chrome). Brand tokens only;
+ * src/admin/admin-styles.test.ts keeps it that way.
+ *
+ * Breakpoint: the nav sits in the bar from 1024px, in the <details> menu below.
+ */
+
+/* ── Lockup ─────────────────────────────────────────────────────────────── */
+
+/*
+ * The mark is as tall as the wordmark's font size (Mark draws at 1em), with a
+ * gap of one bar width: the mark's wall is 9 of its 48 units.
+ */
+.lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(9em / 48);
+  min-height: 44px;
+  font-size: 1.25rem;
+  color: var(--evemos-ink);
+  text-decoration: none;
+}
+
+@media (min-width: 480px) {
+  .lockup {
+    font-size: 1.5rem;
+  }
+}
+
+.wordmark {
+  font-family: var(--evemos-font-display);
+  font-weight: var(--evemos-type-display-weight);
+  font-stretch: 125%;
+  letter-spacing: var(--evemos-type-display-tracking);
+  line-height: 1;
+  text-transform: lowercase;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────── */
+
+/*
+ * The menu bar (E-119): glass floating `--site-bar-top` from the window's top,
+ * over the page as it scrolls. The header keeps its place in the flow, so every
+ * page starts under the bar without making room itself. The header's own box is
+ * clear and lets clicks through to the page beside and above the bar.
+ */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding-top: var(--site-bar-top);
+  pointer-events: none;
+}
+
+.bar {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  gap: var(--evemos-space-2);
+  height: var(--site-bar-height);
+  padding: 0 var(--evemos-space-2) 0 var(--evemos-space-4);
+  border-radius: var(--ex-r-lg);
+  pointer-events: auto;
+}
+
+/*
+ * The bar's glass, on a layer behind its content (DESIGN.md "Glass rules"): a
+ * frost on the bar itself would hold its menus inside it and stop theirs.
+ */
+.bar::before,
+.dropdownPanel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border: 1px solid var(--ex-rim);
+  border-radius: inherit;
+  background: var(--ex-sheen), var(--ex-glass-strong);
+  box-shadow: var(--ex-shine), var(--ex-shadow-float);
+  -webkit-backdrop-filter: var(--ex-blur);
+  backdrop-filter: var(--ex-blur);
+  pointer-events: none;
+}
+
+.nav {
+  display: none;
+}
+
+.navList,
+.menuList,
+.footerList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.navList {
+  display: flex;
+  gap: 2px;
+}
+
+.navLink {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: var(--evemos-space-2);
+  border-radius: var(--ex-r-md);
+  font-weight: var(--evemos-type-body-strong-weight);
+  color: var(--evemos-ink);
+  text-decoration: none;
+  text-underline-offset: 3px;
+}
+
+/*
+ * The white pill under the link the pointer or the focus is on (DropdownNav):
+ * placed by script, so without it there is none. Where it goes springs; how
+ * wide it is eases, so its round ends never squash.
+ */
+.hoverPill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 44px;
+  border-radius: var(--ex-r-md);
+  background: var(--site-pill);
+  box-shadow: var(--ex-chip-edge);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform var(--ex-t-slow) var(--ex-spring),
+    width var(--ex-t-base) var(--ex-out),
+    opacity var(--ex-t-fast) var(--ex-out);
+}
+
+.hoverPill[data-shown] {
+  opacity: 1;
+}
+
+.hoverPill[data-jump] {
+  transition: opacity var(--ex-t-fast) var(--ex-out);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--evemos-space-2);
+  margin-left: auto;
+}
+
+.login {
+  display: none;
+}
+
+/* The phone menu: a <details> the browser opens and closes, no script. */
+.menuButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--evemos-space-2);
+  min-width: 44px;
+  min-height: 44px;
+  padding-inline: var(--evemos-space-2);
+  border-radius: var(--ex-r-md);
+  background: var(--site-pill);
+  box-shadow: var(--ex-chip-edge);
+  color: var(--evemos-ink);
+  font-weight: var(--evemos-type-body-strong-weight);
+  cursor: pointer;
+  list-style: none;
+}
+
+.menuButton::-webkit-details-marker {
+  display: none;
+}
+
+/* On the narrowest phones the word goes off screen but stays the button's name. */
+@media (max-width: 479px) {
+  .menuLabel {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+/* Positioned against the bar, so it spans the bar's width under it. */
+.menuPanel {
+  position: absolute;
+  top: calc(100% + var(--evemos-space-2));
+  left: 0;
+  right: 0;
+  padding: var(--evemos-space-2) var(--evemos-space-4) var(--evemos-space-4);
+  border-radius: var(--ex-r-lg);
+  background: var(--ex-solid);
+  box-shadow: var(--ex-shadow-float);
+}
+
+.menuList {
+  display: grid;
+  gap: var(--evemos-space-1);
+}
+
+@media (min-width: 1024px) {
+  .bar {
+    gap: var(--evemos-space-4);
+  }
+
+  .nav {
+    display: block;
+  }
+
+  .login {
+    display: inline-flex;
+  }
+
+  .menu {
+    display: none;
+  }
+}
+
+/*
+ * A closed <details> still lays out its content in Chrome (it only skips the
+ * paint), so a closed menu's panel can push the page sideways. Closed means gone.
+ */
+.menu:not([open]) .menuPanel,
+.dropdown:not([open]) .dropdownPanel {
+  display: none;
+}
+
+/* ── Dropdown menus (from 1024px) ───────────────────────────────────────── */
+
+.dropdown {
+  position: static;
+}
+
+.dropdownButton {
+  gap: var(--evemos-space-1);
+  cursor: pointer;
+  list-style: none;
+}
+
+.dropdownButton::-webkit-details-marker {
+  display: none;
+}
+
+.dropdownButton svg {
+  transition: transform var(--ex-t-base) var(--ex-out);
+}
+
+.dropdown[open]:not([data-closing]) > .dropdownButton svg {
+  transform: rotate(180deg);
+}
+
+/*
+ * A glass card under the bar, grown from its button (DESIGN.md's motion
+ * table: scale .95 to 1 over `--ex-t-base`; shrinking back over `--ex-t-fast`).
+ * Positioned against the bar: at its left end without script, under its
+ * button with it (DropdownNav, `--menu-origin`). Its glass is the bar's, with
+ * the dropdown's own white: 82 % where the frost draws, near-opaque in Firefox,
+ * which draws no frost for this card (F-192c review; site.scss), so the page
+ * under it would read through sharp there.
+ *
+ * The card itself only moves; its glass and its lines fade. An opacity on
+ * the card would cut its glass off from the page behind it until the fade
+ * ends (Chromium), so the frost would arrive only after the card had grown.
+ * The glass is there almost at once (`--ex-t-press`), so no frame shows the
+ * page through a half-faded card; the lines fade in on it over `--ex-t-base`.
+ */
+.dropdownPanel {
+  position: absolute;
+  top: calc(100% + var(--evemos-space-2));
+  left: 0;
+  isolation: isolate;
+  width: max-content;
+  max-width: 100%;
+  padding: calc(var(--evemos-space-4) + var(--evemos-space-1));
+  border-radius: var(--ex-r-xl);
+  transform-origin: var(--menu-origin, 40px) 0;
+  animation: menu-grow var(--ex-t-base) var(--ex-out);
+}
+
+.dropdownPanel::before {
+  background: var(--ex-sheen), var(--site-dropdown);
+}
+
+.dropdownPanel::before {
+  animation: menu-fade-in var(--ex-t-press) var(--ex-out);
+}
+
+.dropdownPanel > * {
+  animation: menu-fade-in var(--ex-t-base) var(--ex-out);
+}
+
+.dropdown[data-closing] > .dropdownPanel {
+  animation: menu-shrink var(--ex-t-fast) var(--ex-out) forwards;
+}
+
+.dropdown[data-closing] > .dropdownPanel::before,
+.dropdown[data-closing] > .dropdownPanel > * {
+  animation: menu-fade-out var(--ex-t-fast) var(--ex-out) forwards;
+}
+
+@keyframes menu-grow {
+  from {
+    transform: translateY(-4px) scale(0.95);
+  }
+}
+
+@keyframes menu-shrink {
+  to {
+    transform: translateY(-4px) scale(0.95);
+  }
+}
+
+@keyframes menu-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes menu-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+.dropdownGroups {
+  display: grid;
+  grid-auto-columns: minmax(10rem, 13.75rem);
+  grid-auto-flow: column;
+  gap: calc(var(--evemos-space-4) + var(--evemos-space-1));
+}
+
+.groupTitle {
+  margin: 0 0 var(--evemos-space-2);
+  padding-inline: var(--evemos-space-2);
+  color: var(--evemos-ink-muted);
+  font-size: 0.875rem;
+  line-height: 1.3;
+  font-weight: var(--evemos-type-body-strong-weight);
+}
+
+.groupList {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dropItem {
+  display: grid;
+  gap: 2px;
+  padding: var(--evemos-space-2);
+  border-radius: var(--ex-r-md);
+  color: var(--evemos-ink);
+  text-decoration: none;
+  transition: background-color var(--ex-t-fast) var(--ex-out);
+}
+
+/* Hover only where a pointer hovers: a tap would leave it stuck on a touch screen. */
+@media (hover: hover) {
+  .dropItem:hover {
+    background: var(--ex-current);
+  }
+}
+
+.dropLabel {
+  font-size: 0.9375rem;
+  line-height: 1.3;
+  font-weight: var(--evemos-type-body-strong-weight);
+}
+
+.dropLine {
+  color: var(--evemos-ink-muted);
+  font-size: 0.875rem;
+  line-height: 1.35;
+}
+
+.dropOverview {
+  display: inline-flex;
+  margin: var(--evemos-space-4) var(--evemos-space-2) 0;
+  color: var(--evemos-hall-violet);
+  font-weight: var(--evemos-type-body-strong-weight);
+  text-decoration: none;
+}
+
+@media (hover: hover) {
+  .dropOverview:hover {
+    text-decoration: underline;
+  }
+}
+
+/* Without frost in the browser, or with reduced transparency: the glass turns nearly solid. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .bar::before,
+  .dropdownPanel::before {
+    background: var(--ex-solid);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .bar::before,
+  .dropdownPanel::before {
+    background: var(--ex-solid);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/* The phone menu: one block per menu. */
+.menuSection {
+  padding-bottom: var(--evemos-space-4);
+  margin-bottom: var(--evemos-space-4);
+  border-bottom: 1px solid var(--evemos-line);
+}
+
+/* Pricing and Log in, above the menus: the same rule under them, always one column. */
+.menuQuick {
+  padding-bottom: var(--evemos-space-4);
+  margin-bottom: var(--evemos-space-4);
+  border-bottom: 1px solid var(--evemos-line);
+}
+
+.menuPanel {
+  max-height: calc(100vh - var(--site-header-height) - var(--evemos-space-4));
+  overflow-y: auto;
+}
+
+/* On a tablet the long menu reads in two columns. */
+@media (min-width: 640px) {
+  .menuSection .menuList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/*
+ * The phone's sheet (with script, PhoneMenu's `data-sheet`; E-119): it slides
+ * in from the left over a dim and back out the same way, over `--ex-t-slow`.
+ * 48px rows. Without script none of this applies and the menu opens in place.
+ */
+.dim,
+.sheetClose {
+  display: none;
+}
+
+.menu[data-sheet][open] .dim {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  background: var(--site-dim);
+  animation: sheet-dim-in var(--ex-t-slow) var(--ex-out);
+}
+
+.menu[data-sheet] .menuPanel {
+  position: fixed;
+  top: var(--evemos-space-2);
+  bottom: var(--evemos-space-2);
+  left: var(--evemos-space-2);
+  right: auto;
+  z-index: 2;
+  width: min(360px, calc(100vw - 2 * var(--evemos-space-2)));
+  max-height: none;
+  padding: var(--evemos-space-4) var(--evemos-space-2) calc(var(--evemos-space-4) + env(safe-area-inset-bottom));
+  border-radius: var(--ex-r-xl);
+  overscroll-behavior: contain;
+  animation: sheet-in var(--ex-t-slow) var(--ex-out);
+}
+
+.menu[data-sheet][data-closing] .menuPanel {
+  animation: sheet-out var(--ex-t-slow) var(--ex-out) forwards;
+}
+
+.menu[data-sheet][data-closing] .dim {
+  animation: sheet-dim-out var(--ex-t-slow) var(--ex-out) forwards;
+}
+
+@keyframes sheet-in {
+  from {
+    transform: translateX(calc(-100% - var(--evemos-space-4)));
+  }
+}
+
+@keyframes sheet-out {
+  to {
+    transform: translateX(calc(-100% - var(--evemos-space-4)));
+  }
+}
+
+@keyframes sheet-dim-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes sheet-dim-out {
+  to {
+    opacity: 0;
+  }
+}
+
+.menu[data-sheet] .menuPanel .navLink {
+  min-height: 48px;
+}
+
+/* The sheet is one column wide at every width. */
+.menu[data-sheet] .menuSection .menuList {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.menu[data-sheet] .sheetClose {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin: 0 0 var(--evemos-space-2) auto;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ex-r-md);
+  background: transparent;
+  color: var(--evemos-ink);
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .menu[data-sheet] .sheetClose:hover {
+    background: var(--ex-current);
+  }
+}
+
+/* ── Footer ─────────────────────────────────────────────────────────────── */
+
+/*
+ * The demo's footer (E-119): white, the lockup and the one-liner beside five
+ * columns of quiet links, and the copyright, offices and legal links in one
+ * paper strip under them.
+ */
+.footer {
+  padding-block: clamp(64px, 7vw, 104px) calc(var(--evemos-space-8) + var(--evemos-space-2));
+  background: var(--evemos-surface-raised);
+  border-top: 1px solid var(--evemos-line);
+}
+
+.footerGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--evemos-space-8) var(--evemos-space-4);
+}
+
+.footerBrand {
+  grid-column: 1 / -1;
+  display: grid;
+  align-content: start;
+  gap: var(--evemos-space-4);
+  justify-items: start;
+  max-width: 280px;
+}
+
+/* Five link columns under the brand from 768px; the brand beside them from 1100px. */
+@media (min-width: 768px) {
+  .footerGrid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1100px) {
+  .footerGrid {
+    grid-template-columns: 260px repeat(5, minmax(0, 1fr));
+    column-gap: calc(var(--evemos-space-8) + var(--evemos-space-4));
+  }
+
+  .footerBrand {
+    grid-column: auto;
+  }
+}
+
+.footerLine {
+  color: var(--evemos-ink-muted);
+}
+
+/* Column titles in sentence case at body size (second design pass); an h2 for the outline, not for its size. */
+.footerHeading {
+  margin-bottom: var(--evemos-space-2);
+  font-family: var(--font-body);
+  font-size: var(--evemos-type-body-size);
+  line-height: 1.3;
+  font-weight: var(--evemos-type-body-strong-weight);
+  color: var(--evemos-ink);
+}
+
+.footerLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--evemos-ink-muted);
+  font-size: 0.9375rem;
+  line-height: 1.35;
+  text-decoration: none;
+  text-underline-offset: 3px;
+}
+
+@media (hover: hover) {
+  .footerLink:hover {
+    color: var(--evemos-ink);
+    text-decoration: underline;
+  }
+}
+
+/* The copyright, the offices and Privacy and Terms, in one paper strip. */
+.footerBase {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--evemos-space-2) calc(var(--evemos-space-8) - var(--evemos-space-1));
+  margin-top: calc(var(--evemos-space-8) + var(--evemos-space-4));
+  padding: var(--evemos-space-2) calc(var(--evemos-space-4) + var(--evemos-space-1));
+  border-radius: var(--ex-r-lg);
+  background: var(--evemos-paper);
+  color: var(--evemos-ink-muted);
+  font-size: 0.875rem;
+}
+
+.legalList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--evemos-space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 768px) {
+  .footerBase nav {
+    margin-left: auto;
+  }
+}
+
+.footerBase .footerLink {
+  font-size: inherit;
+}

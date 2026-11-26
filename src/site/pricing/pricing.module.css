@@ -1,0 +1,135 @@
+/*
+ * /pricing's plan cards (src/site/pricing). Brand tokens and the app's glass
+ * tokens only (src/admin/admin-styles.test.ts). The plans are glass key cards
+ * on the washes (home.module.css `.glass` and `.keyCard`, F-192e); the
+ * recommended plan is the one card filled hall violet (second design pass,
+ * #146), with a chip.
+ */
+
+.plans {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--evemos-space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 768px) {
+  .plans {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1200px) {
+  .plans {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/*
+ * A plan: a key card, taller than the site's others. `.plans > li` outranks
+ * `.keyCard`'s padding whichever of the two sheets loads first.
+ */
+.plans > li {
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: var(--evemos-space-4);
+  padding: var(--evemos-space-8) var(--evemos-space-4);
+  border-radius: var(--ex-r-lg);
+}
+
+/* Solid, not glass, and lifted off the washes by the glass's shadow: its white text keeps the brand's measured pair. */
+.recommended {
+  background: var(--evemos-hall-violet);
+  color: var(--evemos-on-hall-violet);
+  box-shadow: var(--ex-shadow);
+}
+
+.recommended .planFor,
+.recommended .per,
+.recommended .includes svg {
+  color: inherit;
+}
+
+.planTop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--evemos-space-2);
+}
+
+.planFor {
+  color: var(--evemos-ink-muted);
+}
+
+.includes {
+  display: grid;
+  align-content: start;
+  gap: var(--evemos-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.includes li {
+  display: flex;
+  gap: var(--evemos-space-2);
+  align-items: flex-start;
+}
+
+.includes svg {
+  flex-shrink: 0;
+  margin-top: 4px;
+  color: var(--evemos-hall-violet);
+}
+
+.quote {
+  padding-top: var(--evemos-space-4);
+  font-weight: var(--evemos-type-body-strong-weight);
+}
+
+/* The amount on its own line, set like a heading; what it buys in body text under it. */
+.amount {
+  display: block;
+  font-family: var(--evemos-font-display);
+  font-size: var(--evemos-type-headline-size);
+  line-height: var(--evemos-type-headline-line);
+  font-weight: var(--evemos-type-headline-weight);
+  letter-spacing: var(--evemos-type-headline-tracking);
+}
+
+.per {
+  display: block;
+  color: var(--evemos-ink-muted);
+  font-weight: var(--evemos-type-body-weight);
+}
+
+.faq {
+  display: grid;
+  gap: var(--evemos-space-4) var(--evemos-space-8);
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .faq {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.faqItem {
+  padding: var(--evemos-space-4) 0;
+}
+
+.question {
+  font-family: var(--evemos-font-display);
+  font-size: var(--evemos-type-title-size);
+  line-height: var(--evemos-type-title-line);
+  font-weight: var(--evemos-type-title-weight);
+}
+
+.answer {
+  max-width: 34rem;
+  margin: var(--evemos-space-2) 0 0;
+}

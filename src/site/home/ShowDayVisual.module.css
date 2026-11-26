@@ -1,0 +1,180 @@
+/*
+ * Show day on the homepage (ShowDayVisual.tsx, ShowDayMotion.tsx): the door
+ * photos and the "Checked in today" card on them. Its glass and the pause
+ * button are the homepage's (home.module.css `.glass`, `.float`, `.pause`);
+ * the two rules that move them here outrank theirs by their parent, so the
+ * order the two sheets load in does not matter. Brand tokens and the app's
+ * glass and motion tokens only; src/admin/admin-styles.test.ts keeps it that
+ * way.
+ */
+
+/* The photos, with the card on them from 560px; on a phone the card hangs over the photos' lower edge instead. */
+.showDay {
+  position: relative;
+}
+
+/* The four door photos in one 4:3 window, stacked, the one showing faded in over the rest like light in a room. */
+.doors {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--ex-r-lg);
+  background: var(--evemos-paper);
+}
+
+.door {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity calc(var(--ex-t-enter) * 2) var(--ex-out);
+}
+
+.door[data-on] {
+  opacity: 1;
+}
+
+.photo {
+  object-fit: cover;
+}
+
+/* The pause button top right, clear of the card at the bottom. */
+.doors > button {
+  top: var(--evemos-space-4);
+  bottom: auto;
+}
+
+/*
+ * "Checked in today": glass in the photo card's white, at the photos' lower
+ * left. Over a photo, so every word on it is ink (site-glass.test.ts); the
+ * labels are smaller instead.
+ */
+.showDay > .arrivals {
+  --glass-fill: var(--site-photo-card);
+
+  position: absolute;
+  bottom: clamp(12px, 3vw, 28px);
+  left: clamp(12px, 3vw, 28px);
+  z-index: 1;
+  width: min(300px, calc(100% - 24px));
+  padding: var(--evemos-space-4) calc(var(--evemos-space-4) + var(--evemos-space-1));
+  border-radius: var(--ex-r-lg);
+}
+
+@media (max-width: 559px) {
+  .showDay > .arrivals {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    width: auto;
+    margin: -56px var(--evemos-space-2) 0;
+  }
+}
+
+.arrivalsHead,
+.arrivalsGroups li,
+.arrivalsNote {
+  font-size: var(--evemos-type-code-size);
+  line-height: var(--evemos-type-code-line);
+}
+
+.arrivalsHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--evemos-space-2);
+}
+
+/* "Live", with the success green's dot: the word says it, the dot only draws it. */
+.live {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--evemos-space-2);
+  font-weight: var(--evemos-type-body-strong-weight);
+}
+
+.live::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--evemos-status-success);
+}
+
+.arrivalsTotal {
+  margin: var(--evemos-space-1) 0 var(--evemos-space-2);
+  font-family: var(--evemos-font-display);
+  font-size: var(--evemos-type-headline-size);
+  line-height: 1;
+  font-weight: var(--evemos-type-headline-weight);
+  letter-spacing: var(--evemos-type-headline-tracking);
+  font-variant-numeric: tabular-nums;
+}
+
+.arrivalsGroups {
+  display: grid;
+  gap: var(--evemos-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.arrivalsGroups li {
+  display: grid;
+  grid-template-columns: 78px minmax(0, 1fr) 44px;
+  align-items: center;
+  gap: var(--evemos-space-2);
+}
+
+.arrivalsGroups b {
+  font-weight: var(--evemos-type-body-strong-weight);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* A group's share as a violet bar on a hairline track; it grows with each arrival. */
+.arrivalsBar {
+  height: 6px;
+  overflow: hidden;
+  border-radius: var(--app-pill);
+  background: var(--ex-hair);
+}
+
+.arrivalsBar i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--evemos-hall-violet);
+  transform: scaleX(var(--share));
+  transform-origin: left;
+  transition: transform var(--ex-t-data) var(--ex-out);
+}
+
+.arrivalsNote {
+  margin-top: var(--evemos-space-2);
+}
+
+/*
+ * With motion welcome and script running: the figures count up and the bars
+ * grow once the card is revealed, so they do it where they are seen (held,
+ * like the requests card's rows, while a block around them waits), and the
+ * dot breathes while arrivals keep coming (`data-live`, off once paused).
+ */
+@media (prefers-reduced-motion: no-preference) {
+  :global(.reveal-ready) [data-reveal]:not([data-revealed]) .arrivals * {
+    animation-play-state: paused;
+  }
+
+  :global(.reveal-ready) [data-reveal]:not([data-revealed]) .arrivalsBar i {
+    transform: scaleX(0);
+  }
+
+  .showDay[data-live] .live::before {
+    animation: live-dot 1.8s var(--ex-out) infinite;
+  }
+}
+
+@keyframes live-dot {
+  50% {
+    opacity: 0.35;
+  }
+}

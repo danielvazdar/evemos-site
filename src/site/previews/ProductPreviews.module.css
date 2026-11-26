@@ -1,0 +1,19 @@
+/*
+ * The product-page screens (ProductPreviews.tsx), on top of the shared demo
+ * picture styles (src/site/ui/DemoPreview.module.css). Brand tokens only
+ * (src/admin/admin-styles.test.ts).
+ */
+
+/*
+ * The homepage's requests card (home.module.css `.requests`) as the exhibitor
+ * portal's screen: no photo under it, so it takes the column without the
+ * overlap, at any width.
+ */
+.portal > [data-glass] {
+  width: auto;
+  margin: 0;
+}
+
+.rowText {
+  display: grid;
+}

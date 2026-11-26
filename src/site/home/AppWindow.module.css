@@ -1,0 +1,58 @@
+/*
+ * "Sell the floor"'s app window (AppWindow.tsx): the strong glass
+ * (home.module.css `.glass`) with the event chip, the Overview / Sales switch
+ * (src/site/ui/PillSwitch.module.css) and "Demo data" over the screen it
+ * shows. Brand tokens and the app's glass and motion tokens only;
+ * src/admin/admin-styles.test.ts keeps it that way.
+ */
+
+.window {
+  padding: var(--evemos-space-4);
+  border-radius: var(--ex-r-xl);
+  text-align: left;
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--evemos-space-2) var(--evemos-space-4);
+  padding: var(--evemos-space-1) var(--evemos-space-1) var(--evemos-space-4);
+}
+
+/* "Demo data" right after the switch, not at the far end: the window runs off the page's edge there. */
+.tag {
+  color: var(--evemos-ink-muted);
+  font-size: var(--evemos-type-code-size);
+  line-height: var(--evemos-type-code-line);
+}
+
+.view[hidden] {
+  display: none;
+}
+
+/*
+ * The app's page change (DESIGN.md "Website", Tabs): the view on screen fades
+ * and lifts 4 px in 120 ms (`LEAVE_MS`), as the app's content leaves
+ * (shell.module.css); the new one (`data-view-enter`) rises 12 px, fades in
+ * and un-blurs, by site.scss, the one sheet that writes a blur. The blur is
+ * safe: nothing inside the window frosts (OverviewPreview.module.css).
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .view[data-leaving] {
+    opacity: 0;
+    transform: translateY(-4px);
+    transition:
+      opacity 120ms ease-in,
+      transform 120ms ease-in;
+  }
+}
+
+/*
+ * Q3 = A: the dashboard counts up and draws itself once. Shown again after the
+ * sales board, it is final at once: a view that comes back from `display:
+ * none` would play every one of its pieces' entrances again.
+ */
+.view[data-played] * {
+  animation: none;
+}

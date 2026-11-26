@@ -1,0 +1,105 @@
+/*
+ * The guides' own pieces (src/site/guides/GuideArticle.tsx). The reading
+ * column, sections, lists and tables are the legal documents' styles
+ * (LegalDocument.module.css). Brand tokens and the app's motion tokens only
+ * (src/admin/admin-styles.test.ts).
+ */
+
+.sectionTitle {
+  font-size: var(--evemos-type-headline-size);
+  line-height: var(--evemos-type-headline-line);
+  font-weight: var(--evemos-type-headline-weight);
+  letter-spacing: var(--evemos-type-headline-tracking);
+}
+
+/* The product section is a marketing panel: `surface-raised`, `radius-lg`, no outline. */
+.product {
+  max-width: 72ch;
+  padding: var(--evemos-space-8);
+  border-radius: var(--evemos-radius-lg);
+  background: var(--evemos-surface-raised);
+}
+
+.sourcesTitle {
+  font-size: var(--evemos-type-title-size);
+  line-height: var(--evemos-type-title-line);
+  font-weight: var(--evemos-type-title-weight);
+  letter-spacing: var(--evemos-type-title-tracking);
+}
+
+.sourcesIntro,
+.sources {
+  max-width: 72ch;
+  color: var(--evemos-ink-muted);
+}
+
+.sources {
+  display: grid;
+  gap: var(--evemos-space-2);
+  margin: 0;
+  padding-left: var(--evemos-space-4);
+}
+
+/* One question and its answer in "Questions organisers ask". */
+.question {
+  max-width: 72ch;
+}
+
+.questionTitle {
+  margin: 0 0 var(--evemos-space-2);
+  font-size: var(--evemos-type-title-size);
+  line-height: var(--evemos-type-title-line);
+  font-weight: var(--evemos-type-title-weight);
+  letter-spacing: var(--evemos-type-title-tracking);
+}
+
+/* The hub pages (ArticleHub.tsx): each article with its picture, title and line, two to a row, on the paper band. */
+.hubList {
+  display: grid;
+  gap: calc(var(--evemos-space-8) * 1.5) var(--evemos-space-8);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 768px) {
+  .hubList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* On a pointer that hovers, an article's picture lifts 2 px, as the site's cards do, in the app's timing (DESIGN.md "Website"). */
+.hubPicture {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-bottom: var(--evemos-space-4);
+  border-radius: var(--evemos-radius-lg);
+  transition: transform var(--ex-t-base) var(--ex-spring);
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .hubList li:hover .hubPicture {
+    transform: translateY(-2px);
+  }
+}
+
+.hubLink {
+  font-size: var(--evemos-type-title-size);
+  line-height: var(--evemos-type-title-line);
+  font-weight: var(--evemos-type-title-weight);
+  color: var(--evemos-ink);
+}
+
+.hubLine {
+  margin: var(--evemos-space-1) 0 0;
+}
+
+/* The lead picture and the pictures inside a section: the reading column's width, the site's photo frame. */
+.picture {
+  display: block;
+  width: 100%;
+  max-width: 72ch;
+  height: auto;
+  border-radius: var(--evemos-radius-lg);
+}

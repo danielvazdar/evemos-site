@@ -1,0 +1,138 @@
+/*
+ * The accreditation page's own layout (src/site/accreditation). Cards, chips,
+ * buttons and the demo picture come from the shared primitives and the
+ * homepage modules. Brand tokens only; src/admin/admin-styles.test.ts keeps it
+ * that way (no colour literals, shadows, gradients, blur, or a radius that is
+ * not a token).
+ */
+
+.muted {
+  margin: 0;
+  color: var(--evemos-ink-muted);
+}
+
+.cardTitle {
+  margin-top: var(--evemos-space-4);
+  margin-bottom: var(--evemos-space-2);
+}
+
+/* Photos are marketing panels: `radius-lg`, a hairline, no shadow. */
+.photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--evemos-line);
+  border-radius: var(--evemos-radius-lg);
+}
+
+/* ── Hero ───────────────────────────────────────────────────────────────── */
+
+.hero {
+  display: grid;
+  gap: var(--evemos-space-8);
+  align-items: center;
+}
+
+@media (min-width: 1024px) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+.heroCopy {
+  display: grid;
+  justify-items: start;
+  gap: var(--evemos-space-4);
+}
+
+/* The page's one `display` line, without the 125% width: it is a sentence, not a poster word. */
+.heroTitle {
+  margin-top: var(--evemos-space-2);
+  font-stretch: 100%;
+}
+
+/* ── Steps ──────────────────────────────────────────────────────────────── */
+
+/* The grid is the homepage's audience grid (`home.audience`), 1, 2 and 4 columns. */
+.stepTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stepNumber {
+  color: var(--evemos-ink-muted);
+  font-family: var(--evemos-type-code-family);
+  font-size: var(--evemos-type-code-size);
+  font-weight: var(--evemos-type-code-weight);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── The record ─────────────────────────────────────────────────────────── */
+
+.record {
+  display: grid;
+  gap: var(--evemos-space-8);
+  align-items: start;
+}
+
+@media (min-width: 1024px) {
+  .record {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+.points {
+  display: grid;
+  gap: var(--evemos-space-2);
+  margin: 0;
+  padding-left: var(--evemos-space-4);
+}
+
+.points li::marker {
+  color: var(--evemos-hall-violet);
+}
+
+.recordVisual {
+  display: grid;
+  gap: var(--evemos-space-4);
+}
+
+.applicant {
+  display: grid;
+}
+
+.applicantFrom {
+  color: var(--evemos-ink-muted);
+  font-weight: var(--evemos-type-body-weight);
+}
+
+/* ── Questions ──────────────────────────────────────────────────────────── */
+
+.faq {
+  display: grid;
+  gap: var(--evemos-space-4);
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .faq {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.faqItem {
+  padding: var(--evemos-space-4);
+  border: 1px solid var(--evemos-line);
+  border-radius: var(--evemos-radius-md);
+  background: var(--evemos-surface-raised);
+}
+
+.faqItem dd {
+  margin: var(--evemos-space-2) 0 0;
+}
+
+.question {
+  font-weight: var(--evemos-type-body-strong-weight);
+}
+
